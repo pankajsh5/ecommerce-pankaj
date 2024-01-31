@@ -40,20 +40,30 @@ export function checkAuth() {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await fetch(`${apiBaseUrl}/auth/check`);
+
       if (response.ok) {
         const data = await response.json();
         resolve({ data });
       } else {
-        const error = await response.text();
-        reject(error);
+        // Check if the response is JSON
+        const contentType = response.headers.get('content-type');
+        
+        if (contentType && contentType.includes('application/json')) {
+          // If the error response is JSON, parse it
+          const errorData = await response.json();
+          reject(errorData);
+        } else {
+          // If the error response is not JSON, treat it as a plain text error
+          const error = await response.text();
+          reject(error);
+        }
       }
     } catch (error) {
       reject(error);
     }
-
-    // TODO: on server it will only return some info of user (not password)
   });
 }
+
 
 export function signOut(userId) {
   return new Promise(async (resolve) => {
