@@ -1,7 +1,6 @@
 import apiBaseUrl from "../../apiConfig";
 export function createUser(userData) {
-  console.log('API Base URL:', apiBaseUrl);
-
+  
   return new Promise(async (resolve) => {
     const response = await fetch(`${apiBaseUrl}/auth/signup`, {
       method: "POST",
